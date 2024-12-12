@@ -1,0 +1,24 @@
+command /freerank:
+    trigger:
+        if {freerank.limit} is not set:
+            set {freerank.limit} to 0 #Initialize if the limit has not been set previously 
+        if {freerank.limit} >= 20:
+            send "&cFree Rank is gone! Only available to the first 20 players."
+        else:
+            if {freerank::%player%} is not set:
+                execute console command "lp user %player% parent set winter" # change the rank "winter" to the rank you want to give for free 
+                set {freerank::%player%} to true
+                add 1 to {freerank.limit}
+                send "&aCongratulations! You have received the Winter rank! Remaining &e%20 - {freerank.limit}% &aplayers who can claim."
+            else:
+                send "&cYou have already claimed this rank! Claiming is only available once per player. "
+
+command /resetclaim <offlineplayer>:
+    permission: admin.resetclaim
+    trigger:
+        if {freerank::%arg 1%} is set:
+            delete {freerank::%arg 1%}
+            subtract 1 from {freerank.limit}
+            send "&aClaim free player rank %arg 1% has been reset. Players can reclaim!!!"
+        else:
+            send "&cPlayer %arg 1% haven't claimed this rank before! !"
